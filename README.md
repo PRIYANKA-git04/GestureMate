@@ -1,4 +1,4 @@
-# GestureMate – Gesture-Controlled Chess Controller
+# GestureMate – Gesture Controlled Chess Controller
 
 GestureMate is a touch-free chess web application that allows users to control a virtual chessboard using hand gestures captured through a webcam.
 
