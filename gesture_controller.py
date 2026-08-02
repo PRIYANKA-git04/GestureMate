@@ -189,8 +189,6 @@ class GestureController:
 
         timestamp = int(time.monotonic() * 1000)
 
-        # VIDEO mode requires continuously increasing timestamps
-
         if timestamp <= self.last_timestamp:
             timestamp = self.last_timestamp + 1
 
