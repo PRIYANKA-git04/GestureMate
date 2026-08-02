@@ -82,7 +82,6 @@ function renderGame(state) {
     document.querySelectorAll(".chess-square").forEach(square => {
 
         square.innerHTML = "";
-
         square.classList.remove(
             "selected-square",
             "last-move-square"
@@ -95,10 +94,7 @@ function renderGame(state) {
 
             const pieceElement = document.createElement("span");
 
-            pieceElement.classList.add(
-                "piece",
-                `${piece.colour}-piece`
-            );
+            pieceElement.classList.add( "piece", `${piece.colour}-piece`);
 
             pieceElement.textContent = piece.symbol;
 
@@ -384,8 +380,7 @@ function hidePromotionModal() {
 promotionButtons.forEach(button => {
 
     button.addEventListener("click", () => {
-
-        if (!pendingPromotion) {
+         if (!pendingPromotion) {
             return;
         }
 
@@ -410,8 +405,7 @@ async function startCamera() {
 
         cameraStatus.textContent = "Starting...";
 
-        const response = await fetch("/api/camera/start", {
-            method: "POST"
+        const response = await fetch("/api/camera/start", { method: "POST"
         });
 
         const result = await response.json();
@@ -554,11 +548,7 @@ async function fetchGestureData() {
 
 function updateGestureCursor(x, y) {
 
-    if (
-        typeof x !== "number" ||
-        typeof y !== "number"
-    ) {
-        return;
+    if ( typeof x !== "number" || typeof y !== "number" ) { return;
     }
 
     const limitedX = Math.max(0, Math.min(1, x));
@@ -574,28 +564,17 @@ function updateGestureCursor(x, y) {
 
 function coordinatesToSquare(x, y) {
 
-    if (
-        typeof x !== "number" ||
-        typeof y !== "number"
-    ) {
-        return null;
+    if ( typeof x !== "number" || typeof y !== "number") {  return null;
     }
 
-    const column = Math.min(
-        7, Math.max(0, Math.floor(x * 8))
-    );
+    const column = Math.min( 7, Math.max(0, Math.floor(x * 8)));
 
-    const row = Math.min(
-        7, Math.max(0, Math.floor(y * 8))
-    );
+    const row = Math.min( 7, Math.max(0, Math.floor(y * 8)));
 
     const rank = 8 - row;
 
     return `${files[column]}${rank}`;
 }
-
-
-// ------------------------- BUTTON EVENTS -------------------------
 
 startGameBtn.addEventListener("click", startGame);
 
@@ -604,9 +583,6 @@ restartGameBtn.addEventListener("click", restartGame);
 startCameraBtn.addEventListener("click", startCamera);
 
 stopCameraBtn.addEventListener("click", stopCamera);
-
-
-// ------------------------- INITIALIZE PAGE -------------------------
 
 createChessboard();
 loadGameState();
