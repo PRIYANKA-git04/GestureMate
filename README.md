@@ -118,4 +118,3 @@ http://127.0.0.1:5000
 - Close other applications that may be using the webcam.
 - Use the application in a well-lit environment.
 - Keep your complete hand visible inside the camera frame.
-- The application is designed to run locally because it uses the system webcam.
