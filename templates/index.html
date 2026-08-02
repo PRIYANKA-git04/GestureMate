@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<!-- ------------------------- HERO SECTION ------------------------- -->
+
+<section class="home-hero">
+
+    <div class="hero-overlay">
+
+        <div class="hero-content">
+
+            <p class="hero-label">The Future of Interactive Chess</p>
+
+            <h1> Make Your Move Without Touching the Board</h1>
+
+            <p class="hero-description">
+                Experience chess in a new way using hand gestures,
+                computer vision and real-time move detection.
+            </p>
+
+            <a href="{{ url_for('game') }}" class="primary-btn">Start Playing <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ------------------------- APPLICATION FEATURES ------------------------- -->
+
+<section class="features-section">
+
+    <div class="section-heading">
+
+        <p class="section-label">Application Features</p>
+
+        <h2>A Smarter Way to Play Chess</h2>
+
+        <p>
+            GestureChess combines the traditional chess experience
+            with modern touch-free interaction.
+        </p>
+
+    </div>
+
+    <div class="features-container">
+
+        <div class="feature-card">
+
+            <div class="feature-icon"> <i class="fa-solid fa-hand-pointer"></i></div>
+
+            <h3>Gesture Control</h3>
+
+            <p>Control the chessboard using simple and natural hand movements.</p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="feature-icon"><i class="fa-solid fa-video"></i></div>
+
+            <h3>Live Hand Tracking</h3>
+
+            <p>
+                Track your hand position in real time through
+                the live camera feed.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="feature-icon"><i class="fa-solid fa-chess-knight"></i></div>
+
+            <h3>Legal Move Validation</h3>
+
+            <p>
+                Prevent invalid moves with automatic chess-rule
+                validation.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+
+            <div class="feature-icon"><i class="fa-solid fa-display"></i></div>
+
+            <h3>Interactive Interface</h3>
+
+            <p>
+                Play on a clear digital board with turn and
+                game-status updates.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ------------------------- CHESS RULES ------------------------- -->
+
+<section class="chess-rules-section">
+
+    <div class="section-heading">
+
+        <p class="section-label">Chess Basics</p>
+
+        <h2>Rules of the Chess Game</h2>
+
+        <p>
+            Learn the basic rules you need before starting
+            your GestureChess match.
+        </p>
+
+    </div>
+
+    <div class="chess-rules-container">
+
+        <div class="chess-rule-card">
+
+            <div class="rule-number">1</div>
+
+            <h3>Objective</h3>
+
+            <p>
+                Checkmate the opponent’s king so that it has
+                no legal way to escape.
+            </p>
+
+        </div>
+
+        <div class="chess-rule-card">
+
+            <div class="rule-number">2</div>
+
+            <h3>White Moves First</h3>
+
+            <p>
+                The player controlling the white pieces always
+                begins the game.
+            </p>
+
+        </div>
+
+        <div class="chess-rule-card">
+
+            <div class="rule-number">3</div>
+
+            <h3>Legal Movement</h3>
+
+            <p>
+                Every piece must move according to its specific
+                movement pattern.
+            </p>
+
+        </div>
+
+        <div class="chess-rule-card">
+
+            <div class="rule-number">4</div>
+
+            <h3>Capturing Pieces</h3>
+
+            <p>
+                Capture an opponent’s piece by moving onto the
+                square occupied by it.
+            </p>
+
+        </div>
+
+        <div class="chess-rule-card">
+
+            <div class="rule-number">5</div>
+
+            <h3>Checkmate</h3>
+
+            <p>
+                The game ends when a checked king has no valid
+                move available.
+            </p>
+
+        </div>
+
+        <div class="chess-rule-card">
+
+            <div class="rule-number">6</div>
+
+            <h3>Draw or Stalemate</h3>
+
+            <p>
+                The game may end in a draw when neither player
+                can achieve checkmate.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ------------------------- GESTURE CONTROLS ------------------------- -->
+
+<section class="gesture-section">
+
+    <div class="section-heading">
+
+        <p class="section-label">Touch-Free Controls</p>
+
+        <h2>Control the Game with Two Gestures</h2>
+
+    </div>
+
+    <div class="gesture-container">
+
+        <div class="gesture-card">
+
+            <div class="gesture-icon"><i class="fa-solid fa-hand-point-up"></i></div>
+
+            <div>
+                <h3>Index Finger</h3>
+                <p>Point and move your index finger to control the virtual cursor.</p>
+            </div>
+
+        </div>
+
+        <div class="gesture-card">
+
+            <div class="gesture-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+
+            <div>
+                <h3>Pinch</h3>
+                <p>Pinch your thumb and index finger to select or place a piece.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ------------------------- CALL TO ACTION ------------------------- -->
+
+<section class="home-cta">
+
+    <div class="cta-content">
+
+        <div>
+
+            <p class="section-label">
+                Ready for Your First Move?
+            </p>
+
+            <h2>
+                Take Control of the Board with Your Hand
+            </h2>
+
+        </div>
+
+        <a href="{{ url_for('game') }}" class="primary-btn">Play Chess <i class="fa-solid fa-chess-board"></i>
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

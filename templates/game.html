@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+{% block title %}Play Chess{% endblock %}
+{% block content %}
+
+<!-- ------------------------- GAME BANNER ------------------------- -->
+
+<section class="game-banner">
+
+    <div class="game-banner-content">
+
+        <p class="section-label">Touch-Free Chess</p>
+
+        <h1>Gesture Chess Controller</h1>
+
+        <p>
+            Start the game, activate your camera and control the
+            chess pieces using your index finger and pinch gesture.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- ------------------------- GAME SECTION ------------------------- -->
+
+<section class="game-section">
+
+    <div class="game-container">
+
+        <!-- ------------------------- CHESSBOARD PANEL ------------------------- -->
+
+        <div class="board-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <p class="section-label">Chess Match</p>
+                    <h2>Game Board</h2>
+                </div>
+
+                <div class="turn-indicator">
+                    <span>Current Turn</span>
+                    <strong id="current-turn">White</strong>
+                </div>
+
+            </div>
+
+            <!-- Chessboard squares will be displayed using JavaScript -->
+
+            <div class="board-wrapper">
+
+                <div id="chessboard" class="chessboard" aria-label="Gesture-controlled chessboard"></div>
+
+                <!-- Virtual cursor controlled by the index finger -->
+
+                <div id="gesture-cursor" class="gesture-cursor"></div>
+
+            </div>
+
+            <!-- Game information -->
+
+            <div class="game-information">
+
+                <div class="information-card">
+
+                    <span>Selected Square</span>
+
+                    <strong id="selected-square">None</strong>
+
+                </div>
+
+                <div class="information-card">
+
+                    <span>Game Status</span>
+
+                    <strong id="game-status"> Press Start Game </strong>
+
+                </div>
+
+            </div>
+
+            <!-- Game controls -->
+
+            <div class="game-controls">
+
+                <button
+                    type="button"
+                    id="start-game-btn"
+                    class="control-btn primary-control">    
+                    <i class="fa-solid fa-play"></i> Start Game</button>
+
+                <button
+                    type="button"
+                    id="restart-game-btn"
+                    class="control-btn"
+                    disabled>
+                    <i class="fa-solid fa-rotate-right"></i> Restart Game</button>
+
+            </div>
+
+        </div>
+
+        <!-- ------------------------- CAMERA PANEL ------------------------- -->
+
+        <aside class="camera-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <p class="section-label">Hand Tracking</p>
+                    <h2>Live Camera</h2>
+                </div>
+
+            </div>
+
+            <!-- Camera display -->
+
+            <div class="camera-display">
+
+                <div id="camera-placeholder" class="camera-placeholder">
+
+                    <i class="fa-solid fa-video-slash"></i>
+
+                    <h3>Camera is Off</h3>
+
+                    <p>
+                        Click Start Camera to begin hand tracking.
+                    </p>
+
+                </div>
+
+                <img
+                    id="camera-feed"
+                    class="camera-feed"
+                    src=""
+                    alt="Live hand-tracking camera feed"
+                    hidden
+                >
+
+            </div>
+
+            <!-- Camera controls -->
+
+            <div class="camera-controls">
+
+                <button
+                    type="button"
+                    id="start-camera-btn"
+                    class="control-btn primary-control">
+                    <i class="fa-solid fa-camera"></i> Start Camera</button>
+
+                <button
+                    type="button"
+                    id="stop-camera-btn"
+                    class="control-btn danger-control"
+                    disabled>
+                    <i class="fa-solid fa-video-slash"></i>Stop Camera</button>
+
+            </div>
+
+            <!-- Camera and gesture information -->
+
+            <div class="tracking-information">
+
+                <div class="tracking-card">
+
+                    <div class="tracking-icon"><i class="fa-solid fa-circle-info"></i></div>
+
+                    <div>
+                        <span>Camera Status</span>
+                        <strong id="camera-status">Stopped</strong>
+                    </div>
+
+                </div>
+
+                <div class="tracking-card">
+
+                    <div class="tracking-icon"><i class="fa-solid fa-hand"></i></div>
+
+                    <div>
+                        <span>Detected Gesture</span>
+                        <strong id="detected-gesture">None</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Gesture help -->
+
+            <div class="gesture-help">
+
+                <h3>
+                   <i class="fa-solid fa-lightbulb"></i>
+                    Gesture Guide
+                </h3>
+
+                <p>
+                    <strong>Point:</strong>
+                    Move the virtual cursor across the chessboard.
+                </p>
+
+                <p>
+                    <strong>Pinch:</strong>
+                    Select a piece or its destination square.
+                </p>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+<!-- ------------------------- PAWN PROMOTION ------------------------- -->
+
+<div id="promotion-modal" class="promotion-modal" hidden>
+
+    <div class="promotion-box">
+
+        <p class="section-label">Pawn Promotion</p>
+
+        <h2>Select a New Piece</h2>
+
+        <p>
+            Choose the piece that will replace your pawn.
+        </p>
+
+        <div class="promotion-choices">
+
+            <button
+                type="button"
+                class="promotion-btn"
+                data-piece="queen" >
+                <span class="promotion-symbol" data-white="♕" data-black="♛">
+                    ♕
+                </span>
+
+                Queen
+            </button>
+
+            <button
+                type="button"
+                class="promotion-btn"
+                data-piece="rook">
+                <span class="promotion-symbol" data-white="♖" data-black="♜">
+                    ♖
+                </span>
+
+                Rook
+            </button>
+
+            <button
+                type="button"
+                class="promotion-btn"
+                data-piece="bishop" >
+                <span class="promotion-symbol" data-white="♗" data-black="♝">
+                    ♗
+                </span>
+
+                Bishop
+            </button>
+
+            <button
+                type="button"
+                class="promotion-btn"
+                data-piece="knight" >
+                <span class="promotion-symbol" data-white="♘" data-black="♞">
+                    ♘
+                </span>
+
+                Knight
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Game JavaScript -->
+
+<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+
+{% endblock %}

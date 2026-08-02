@@ -1,0 +1,1048 @@
+/* ------------------------- ROOT VARIABLES ------------------------- */
+:root {
+    --background: #14211D;
+    --background-dark: #09111f;
+    --background-light: #1f2937;
+    --card-background: #182233;
+    --emerald: #10b981;
+    --emerald-dark: #059669;
+    --emerald-light: #6ee7b7;
+    --white: #f9fafb;
+    --grey: #9ca3af;
+    --light-grey: #d1d5db;
+    --border: #374151;
+    --danger: #dc2626;
+    --board-light: #bcc1bc;
+    --board-dark: #3d8b62;
+}
+
+
+/* ------------------------- GLOBAL STYLING ------------------------- */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--white);
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+main {
+    min-height: 70vh;
+}
+
+
+/* ------------------------- SHARED ELEMENTS ------------------------- */
+
+.section-label,
+.hero-label {
+    color: var(--emerald);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.section-heading {
+    margin: 0 auto 45px;
+    max-width: 720px;
+    text-align: center;
+}
+
+.section-heading h2 {
+    color: var(--white);
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.section-heading > p:last-child {
+    color: var(--grey);
+    font-size: 16px;
+}
+
+.primary-btn {
+    align-items: center;
+    background-color: var(--emerald);
+    border: 2px solid var(--emerald);
+    color: var(--background-dark);
+    display: inline-flex;
+    font-size: 15px;
+    font-weight: 700;
+    gap: 10px;
+    justify-content: center;
+    padding: 13px 24px;
+    transition: 0.25s ease;
+}
+
+.primary-btn:hover {
+    background-color: transparent;
+    color: var(--emerald);
+    transform: translateY(-3px);
+}
+
+
+/* ------------------------- NAVBAR ------------------------- */
+
+.navbar {
+    background-color: var(--background-dark);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.nav-container {
+    align-items: center;
+    display: flex;
+    height: 75px;
+    justify-content: space-between;
+    margin: auto;
+    max-width: 1250px;
+    padding: 0 25px;
+}
+
+.logo {
+    align-items: center;
+    color: var(--white);
+    display: flex;
+    font-size: 25px;
+    font-weight: 700;
+    gap: 0px;
+}
+
+.logo span:not(.logo-icon) {
+    color: var(--emerald);
+}
+
+.logo-icon {
+    font-size: 28px;
+}
+
+.nav-links {
+    align-items: center;
+    display: flex;
+    gap: 38px;
+}
+
+.nav-links a {
+    color: var(--light-grey);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 27px 0 24px;
+    position: relative;
+    transition: 0.2s ease;
+}
+
+.nav-links a::after {
+    background-color: var(--emerald);
+    bottom: 17px;
+    content: "";
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transform: scaleX(0);
+    transition: 0.2s ease;
+    width: 100%;
+}
+
+.nav-links a:hover {
+    color: var(--emerald);
+}
+
+.nav-links a:hover::after {
+    transform: scaleX(1);
+}
+
+
+/* ------------------------- HOME HERO ------------------------- */
+
+.home-hero {
+    background:
+        linear-gradient(rgba(9, 17, 31, 0.2),rgba(9, 17, 31, 0.35)),
+        url("../images/chess-hero.png") center/cover no-repeat;
+    min-height: 650px;
+}
+
+.hero-overlay {
+    align-items: center;
+    display: flex;
+    min-height: 650px;
+}
+
+.hero-content {
+    margin: auto;
+    max-width: 1250px;
+    padding: 20px 25px;
+    width: 100%;
+}
+
+.hero-content h1 {
+    font-size: 60px;
+    line-height: 1.12;
+    margin-bottom: 22px;
+    max-width: 780px;
+}
+
+.hero-description {
+    color: var(--light-grey);
+    font-size: 19px;
+    margin-bottom: 32px;
+    max-width: 650px;
+}
+
+
+/* ------------------------- FEATURES ------------------------- */
+
+.features-section {
+    background-color: var(--background);
+    padding: 90px 25px;
+}
+
+.features-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    margin: auto;
+    max-width: 1250px;
+}
+
+.feature-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border);
+    min-height: 260px;
+    padding: 34px 25px;
+    transition: 0.25s ease;
+}
+
+.feature-card:hover {
+    border-color: var(--emerald);
+    transform: translateY(-7px);
+}
+
+.feature-icon {
+    align-items: center;
+    background-color: rgba(16, 185, 129, 0.12);
+    border: 1px solid var(--emerald);
+    color: var(--emerald);
+    display: flex;
+    font-size: 25px;
+    height: 58px;
+    justify-content: center;
+    margin-bottom: 25px;
+    width: 58px;
+}
+
+.feature-card h3 {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: var(--grey);
+    font-size: 15px;
+}
+
+
+/* ------------------------- CHESS RULES ------------------------- */
+
+.chess-rules-section {
+    background-color: var(--background-dark);
+    padding: 90px 25px;
+}
+
+.chess-rules-container {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(3, 1fr);
+    margin: auto;
+    max-width: 1150px;
+}
+
+.chess-rule-card {
+    background-color: var(--card-background);
+    border-left: 4px solid var(--emerald);
+    min-height: 220px;
+    padding: 30px;
+    transition: 0.25s ease;
+}
+
+.chess-rule-card:hover {
+    background-color: var(--background-light);
+    transform: translateY(-6px);
+}
+
+.rule-number {
+    align-items: center;
+    background-color: var(--emerald);
+    color: var(--background-dark);
+    display: flex;
+    font-size: 18px;
+    font-weight: 800;
+    height: 42px;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 42px;
+}
+
+.chess-rule-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.chess-rule-card p {
+    color: var(--grey);
+    font-size: 15px;
+}
+
+
+/* ------------------------- GESTURES ------------------------- */
+
+.gesture-section {
+    background-color: var(--background);
+    padding: 90px 25px;
+}
+
+.gesture-container {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(2, 1fr);
+    margin: auto;
+    max-width: 900px;
+}
+
+.gesture-card {
+    align-items: center;
+    background-color: var(--card-background);
+    border: 1px solid var(--border);
+    display: flex;
+    gap: 22px;
+    padding: 28px;
+    transition: 0.25s ease;
+}
+
+.gesture-card:hover {
+    border-color: var(--emerald);
+    transform: translateY(-5px);
+}
+
+.gesture-icon {
+    align-items: center;
+    border: 2px solid var(--emerald);
+    color: var(--emerald);
+    display: flex;
+    flex-shrink: 0;
+    font-size: 27px;
+    height: 65px;
+    justify-content: center;
+    width: 65px;
+}
+
+.gesture-card h3 {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.gesture-card p {
+    color: var(--grey);
+    font-size: 14px;
+}
+
+
+/* ------------------------- HOME CTA ------------------------- */
+
+.home-cta {
+    background-color: var(--emerald-dark);
+    padding: 55px 25px;
+}
+
+.cta-content {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    max-width: 1100px;
+}
+
+.home-cta .section-label {
+    color: var(--background-dark);
+}
+
+.cta-content h2 {
+    color: var(--white);
+    font-size: 34px;
+}
+
+.home-cta .primary-btn {
+    background-color: var(--background-dark);
+    border-color: var(--background-dark);
+    color: var(--white);
+}
+
+.home-cta .primary-btn:hover {
+    background-color: transparent;
+    color: var(--background-dark);
+}
+
+
+/* ------------------------- GAME BANNER ------------------------- */
+
+.game-banner,
+.contact-banner {
+    align-items: center;
+    background:
+        linear-gradient(rgba(9, 17, 31, 0.82), rgba(9, 17, 31, 0.92)),
+        url("../images/chess-banner.jpg") center/cover no-repeat;
+    display: flex;
+    min-height: 300px;
+    padding: 45px 25px;
+    text-align: center;
+}
+
+.game-banner-content,
+.contact-banner-content {
+    margin: auto;
+    max-width: 750px;
+}
+
+.game-banner h1,
+.contact-banner h1 {
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+.game-banner-content > p:last-child,
+.contact-banner-content > p:last-child {
+    color: var(--light-grey);
+    font-size: 17px;
+}
+
+
+/* ------------------------- GAME LAYOUT ------------------------- */
+
+.game-section {
+    background-color: var(--background);
+    padding: 65px 25px 90px;
+}
+
+.game-container {
+    align-items: start;
+    display: grid;
+    gap: 30px;
+    grid-template-columns: 1.7fr 1fr;
+    margin: auto;
+    max-width: 1350px;
+}
+
+.board-panel {
+    background-color: var(--card-background);
+    border: 1px solid var(--border);
+    padding: 30px;
+}
+
+.camera-panel {
+    background-color: var(--card-background);
+    border: 1px solid var(--border);
+    padding: 22px;
+}
+
+.panel-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.panel-heading h2 {
+    font-size: 27px;
+}
+
+.turn-indicator {
+    background-color: var(--background-dark);
+    border-left: 3px solid var(--emerald);
+    padding: 9px 16px;
+    text-align: right;
+}
+
+.turn-indicator span {
+    color: var(--grey);
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.turn-indicator strong {
+    color: var(--emerald);
+    font-size: 17px;
+}
+
+
+/* ------------------------- CHESSBOARD ------------------------- */
+
+.board-wrapper {
+    height: 608px;
+    margin: 0 auto;
+    position: relative;
+    width: 608px;
+}
+
+.chessboard {
+    border: 4px solid var(--background-dark);
+    display: grid;
+    grid-template-columns: repeat(8, 75px);
+    grid-template-rows: repeat(8, 75px);
+    height: 608px;
+    width: 608px;
+}
+
+.chess-square {
+    align-items: center;
+    border: none;
+    display: flex;
+    font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
+    font-size: 54px;
+    height: 75px;
+    justify-content: center;
+    position: relative;
+    user-select: none;
+    width: 75px;
+}
+
+.light-square {
+    background-color: var(--board-light);
+}
+
+.dark-square {
+    background-color: var(--board-dark);
+}
+
+.white-piece {
+    color: #ffffff;
+}
+
+.black-piece {
+    color: #101828;
+}
+
+.selected-square {
+    outline: 5px solid #facc15;
+    outline-offset: -5px;
+}
+
+.legal-square::after {
+    background-color: rgba(16, 185, 129, 0.75);
+    content: "";
+    height: 18px;
+    position: absolute;
+    width: 18px;
+}
+
+.last-move-square {
+    background-color: #a7d46f;
+}
+
+.gesture-cursor {
+    background-color: rgba(16, 185, 129, 0.25);
+    border: 3px solid var(--emerald);
+    display: none;
+    height: 30px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    z-index: 10;
+}
+
+
+/* ------------------------- GAME INFORMATION ------------------------- */
+
+.game-information {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 25px;
+}
+
+.information-card {
+    background-color: var(--background-dark);
+    border-left: 3px solid var(--emerald);
+    padding: 13px 16px;
+}
+
+.information-card span {
+    color: var(--grey);
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.information-card strong {
+    color: var(--white);
+    font-size: 16px;
+}
+
+.game-controls,
+.camera-controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.control-btn {
+    align-items: center;
+    background-color: var(--background-light);
+    border: 1px solid var(--border);
+    color: var(--white);
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 8px;
+    justify-content: center;
+    padding: 12px 18px;
+    transition: 0.2s ease;
+}
+
+.control-btn:hover:not(:disabled) {
+    border-color: var(--emerald);
+    color: var(--emerald);
+    transform: translateY(-2px);
+}
+
+.primary-control {
+    background-color: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--background-dark);
+}
+
+.primary-control:hover:not(:disabled) {
+    background-color: var(--emerald-dark);
+    color: var(--white);
+}
+
+.danger-control {
+    border-color: var(--danger);
+    color: #fca5a5;
+}
+
+.danger-control:hover:not(:disabled) {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.control-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+/* ------------------------- PAWN PROMOTION ------------------------- */
+
+.promotion-modal {
+    align-items: center;
+    background-color: rgba(9, 17, 31, 0.85);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    position: fixed;
+    z-index: 2000;
+}
+
+.promotion-modal[hidden] {
+    display: none;
+}
+
+.promotion-box {
+    background-color: var(--card-background);
+    border: 2px solid var(--emerald);
+    padding: 35px;
+    text-align: center;
+    width: 520px;
+}
+
+.promotion-box h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.promotion-box > p:last-of-type {
+    color: var(--grey);
+}
+
+.promotion-choices {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 28px;
+}
+
+.promotion-btn {
+    align-items: center;
+    background-color: var(--background-dark);
+    border: 1px solid var(--border);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    gap: 5px;
+    padding: 14px 8px;
+    transition: 0.2s ease;
+}
+
+.promotion-btn:hover {
+    border-color: var(--emerald);
+    color: var(--emerald);
+    transform: translateY(-3px);
+}
+
+.promotion-symbol {
+    font-family: "Segoe UI Symbol", sans-serif;
+    font-size: 42px;
+    line-height: 1;
+}
+
+
+/* ------------------------- CAMERA PANEL ------------------------- */
+
+.camera-display {
+    align-items: center;
+    background-color: var(--background-dark);
+    border: 2px solid var(--border);
+    display: flex;
+    height: 360px;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+}
+
+.camera-placeholder {
+    color: var(--grey);
+    padding: 30px;
+    text-align: center;
+}
+
+.camera-placeholder i {
+    color: var(--emerald);
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.camera-placeholder h3 {
+    color: var(--white);
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
+.camera-feed {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.camera-controls .control-btn {
+    flex: 1;
+}
+
+.tracking-information {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 20px;
+}
+
+.tracking-card {
+    align-items: center;
+    background-color: var(--background-dark);
+    border: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+}
+
+.tracking-icon {
+    align-items: center;
+    color: var(--emerald);
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+}
+
+.tracking-card span {
+    color: var(--grey);
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.tracking-card strong {
+    font-size: 14px;
+}
+
+.gesture-help {
+    border-left: 3px solid var(--emerald);
+    margin-top: 20px;
+    padding: 14px 18px;
+}
+
+.gesture-help h3 {
+    color: var(--emerald);
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.gesture-help p {
+    color: var(--grey);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.gesture-help strong {
+    color: var(--white);
+}
+
+
+/* ------------------------- CONTACT PAGE ------------------------- */
+
+.contact-section {
+    background-color: var(--background);
+    padding: 80px 25px;
+}
+
+.contact-container {
+    display: grid;
+    gap: 55px;
+    grid-template-columns: 0.9fr 1.1fr;
+    margin: auto;
+    max-width: 1100px;
+}
+
+.contact-information,
+.contact-form-container {
+    background-color: var(--card-background);
+    border: 1px solid var(--border);
+    padding: 40px;
+}
+
+.contact-information h2,
+.contact-form-container h2 {
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+.contact-introduction,
+.contact-form-container > p {
+    color: var(--grey);
+    margin-bottom: 30px;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.contact-item {
+    align-items: center;
+    background-color: var(--background-dark);
+    border-left: 3px solid var(--emerald);
+    display: flex;
+    gap: 16px;
+    padding: 17px;
+}
+
+.contact-icon {
+    align-items: center;
+    color: var(--emerald);
+    display: flex;
+    font-size: 22px;
+    justify-content: center;
+    width: 30px;
+}
+
+.contact-item span {
+    color: var(--grey);
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.contact-item a,
+.contact-item p {
+    color: var(--white);
+    font-size: 15px;
+}
+
+
+/* ------------------------- CONTACT FORM ------------------------- */
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+.form-field label {
+    color: var(--light-grey);
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.form-field input,
+.form-field textarea {
+    background-color: var(--background-dark);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-size: 14px;
+    outline: none;
+    padding: 13px 14px;
+    transition: 0.2s ease;
+    width: 100%;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+    border-color: var(--emerald);
+}
+
+.form-field textarea {
+    resize: vertical;
+}
+
+.success-message {
+    align-items: center;
+    background-color: rgba(16, 185, 129, 0.12);
+    border: 1px solid var(--emerald);
+    color: var(--emerald-light);
+    display: flex;
+    gap: 10px;
+    margin-bottom: 22px;
+    padding: 13px 15px;
+}
+
+.submit-btn {
+    align-self: flex-start;
+}
+
+
+/* ------------------------- FOOTER ------------------------- */
+
+.footer {
+    background-color: var(--background-dark);
+    border-top: 1px solid var(--border);
+}
+
+.footer-container {
+    display: grid;
+    gap: 80px;
+    grid-template-columns: 1.4fr 0.8fr 1fr;
+    margin: auto;
+    max-width: 1200px;
+    padding: 60px 25px 45px;
+}
+
+.footer-column h3 {
+    color: var(--white);
+    font-size: 18px;
+    margin-bottom: 18px;
+}
+
+.footer-logo {
+    font-size: 24px;
+    margin-bottom: 14px;
+}
+
+.footer-logo span {
+    color: var(--emerald);
+}
+
+.footer-column > p {
+    color: var(--grey);
+    font-size: 14px;
+    margin-bottom: 10px;
+    max-width: 340px;
+}
+
+.footer-column > p i {
+    color: var(--emerald);
+    margin-right: 9px;
+    width: 18px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-links a {
+    color: var(--grey);
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--emerald);
+    padding-left: 5px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.social-icons a {
+    align-items: center;
+    border: 1px solid var(--border);
+    color: var(--grey);
+    display: flex;
+    height: 38px;
+    justify-content: center;
+    transition: 0.2s ease;
+    width: 38px;
+}
+
+.social-icons a:hover {
+    border-color: var(--emerald);
+    color: var(--emerald);
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--border);
+    color: var(--grey);
+    font-size: 13px;
+    padding: 17px 25px;
+    text-align: center;
+}
