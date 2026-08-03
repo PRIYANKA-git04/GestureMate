@@ -1,296 +1,612 @@
-import chess
-from threading import Lock
+// ------------------------- PAGE ELEMENTS -------------------------
+const chessboard = document.getElementById("chessboard");
+const currentTurn = document.getElementById("current-turn");
+const selectedSquareText = document.getElementById("selected-square");
+const gameStatus = document.getElementById("game-status");
+
+const startGameBtn = document.getElementById("start-game-btn");
+const restartGameBtn = document.getElementById("restart-game-btn");
+
+const startCameraBtn = document.getElementById("start-camera-btn");
+const stopCameraBtn = document.getElementById("stop-camera-btn");
+
+const cameraFeed = document.getElementById("camera-feed");
+const cameraPlaceholder = document.getElementById("camera-placeholder");
+const cameraStatus = document.getElementById("camera-status");
+const detectedGesture = document.getElementById("detected-gesture");
+
+const gestureCursor = document.getElementById("gesture-cursor");
+
+const promotionModal = document.getElementById("promotion-modal");
+const promotionButtons = document.querySelectorAll(".promotion-btn");
+const promotionSymbols = document.querySelectorAll(".promotion-symbol");
 
 
-class ChessGame:
+// ------------------------- GAME VARIABLES -------------------------
 
-    def __init__(self):
+const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-        self.board = chess.Board()
-        self.started = False
-        self.lock = Lock()
+let gameState = {
+    started: false,
+    pieces: {},
+    turn: "White",
+    status: "Press Start Game",
+    game_over: false
+};
 
-    # ------------------------- START GAME -------------------------
+let selectedSquare = null;
+let lastMove = null;
+let pendingPromotion = null;
 
-    def start_game(self):
+let gestureInterval = null;
+let pinchLocked = false;
 
-        with self.lock:
 
-            self.board.reset()
-            self.started = True
+// ------------------------- CREATE CHESSBOARD -------------------------
 
-            return {
-                "success": True,
-                "message": "Game started.",
-                **self.create_state()
+function createChessboard() {
+
+    chessboard.innerHTML = "";
+
+    for (let row = 0; row < 8; row++) {
+
+        const rank = 8 - row;
+
+        for (let column = 0; column < 8; column++) {
+
+            const squareName = `${files[column]}${rank}`;
+            const square = document.createElement("div");
+
+            square.classList.add("chess-square");
+
+            if ((row + column) % 2 === 0) {
+                square.classList.add("light-square");
+            } else {
+                square.classList.add("dark-square");
             }
 
-    # ------------------------- RESTART GAME -------------------------
+            square.dataset.square = squareName;
 
-    def restart_game(self):
+            chessboard.appendChild(square);
+        }
+    }
+}
 
-        with self.lock:
 
-            self.board.reset()
-            self.started = True
+// ------------------------- RENDER GAME STATE -------------------------
 
-            return {
-                "success": True,
-                "message": "Game restarted.",
-                **self.create_state()
-            }
+function renderGame(state) {
 
-    # ------------------------- MAKE MOVE -------------------------
+    gameState = state;
 
-    def make_move(
-        self,
-        from_square,
-        to_square,
-        promotion=None
-    ):
+    document.querySelectorAll(".chess-square").forEach(square => {
 
-        with self.lock:
+        square.innerHTML = "";
 
-            if not self.started:
+        square.classList.remove(
+            "selected-square",
+            "last-move-square"
+        );
 
-                return {
-                    "success": False,
-                    "message": "Start the game before making a move.",
-                    **self.create_state()
-                }
+        const squareName = square.dataset.square;
+        const piece = state.pieces[squareName];
 
-            if self.board.is_game_over(claim_draw=True):
+        if (piece) {
 
-                return {
-                    "success": False,
-                    "message": "The game has already ended.",
-                    **self.create_state()
-                }
+            const pieceElement = document.createElement("span");
 
-            # Validate square names
+            pieceElement.classList.add(
+                "piece",
+                `${piece.colour}-piece`
+            );
 
-            try:
+            pieceElement.textContent = piece.symbol;
 
-                start = chess.parse_square(from_square)
-                destination = chess.parse_square(to_square)
-
-            except (ValueError, TypeError):
-
-                return {
-                    "success": False,
-                    "message": "Invalid chessboard square.",
-                    **self.create_state()
-                }
-
-            piece = self.board.piece_at(start)
-
-            # Check whether a piece exists
-
-            if piece is None:
-
-                return {
-                    "success": False,
-                    "message": (
-                        "No chess piece exists on the selected square."
-                    ),
-                    **self.create_state()
-                }
-
-            # Check whether the correct player selected the piece
-
-            if piece.color != self.board.turn:
-
-                current_player = (
-                    "White" if self.board.turn else "Black"
-                )
-
-                return {
-                    "success": False,
-                    "message": f"It is {current_player}'s turn.",
-                    **self.create_state()
-                }
-
-            promotion_piece = None
-
-            # Check whether pawn promotion is required
-
-            if (
-                piece.piece_type == chess.PAWN
-                and chess.square_rank(destination) in (0, 7)
-            ):
-
-                if promotion is None:
-
-                    return {
-                        "success": False,
-                        "promotion_required": True,
-                        "from_square": from_square,
-                        "to_square": to_square,
-                        "promotion_choices": [
-                            "queen",
-                            "rook",
-                            "bishop",
-                            "knight"
-                        ],
-                        "message": "Select a piece for pawn promotion.",
-                        **self.create_state()
-                    }
-
-                promotion_pieces = {
-                    "queen": chess.QUEEN,
-                    "rook": chess.ROOK,
-                    "bishop": chess.BISHOP,
-                    "knight": chess.KNIGHT
-                }
-
-                promotion_piece = promotion_pieces.get(
-                    str(promotion).lower()
-                )
-
-                if promotion_piece is None:
-
-                    return {
-                        "success": False,
-                        "message": "Invalid promotion choice.",
-                        **self.create_state()
-                    }
-
-            move = chess.Move(
-                start,
-                destination,
-                promotion=promotion_piece
-            )
-
-            # Disable en passant
-
-            if self.board.is_en_passant(move):
-
-                return {
-                    "success": False,
-                    "message": "En passant is disabled in this game.",
-                    **self.create_state()
-                }
-
-            # Validate the move
-
-            if move not in self.board.legal_moves:
-
-                return {
-                    "success": False,
-                    "message": (
-                        "Invalid move. Select a legal destination."
-                    ),
-                    **self.create_state()
-                }
-
-            self.board.push(move)
-
-            return {
-                "success": True,
-                "message": "Move completed successfully.",
-                "last_move": {
-                    "from": from_square,
-                    "to": to_square
-                },
-                **self.create_state()
-            }
-
-    # ------------------------- GET GAME STATE -------------------------
-
-    def get_state(self):
-
-        with self.lock:
-
-            return self.create_state()
-
-    # ------------------------- CREATE GAME STATE -------------------------
-
-    def create_state(self):
-
-        pieces = {}
-
-        for square, piece in self.board.piece_map().items():
-
-            square_name = chess.square_name(square)
-
-            pieces[square_name] = {
-                "symbol": piece.unicode_symbol(),
-                "colour": (
-                    "white" if piece.color else "black"
-                ),
-                "type": chess.piece_name(piece.piece_type)
-            }
-
-        current_turn = (
-            "White" if self.board.turn else "Black"
-        )
-
-        return {
-            "started": self.started,
-            "pieces": pieces,
-            "turn": current_turn,
-            "status": self.get_status(),
-            "game_over": self.board.is_game_over(
-                claim_draw=True
-            )
+            square.appendChild(pieceElement);
         }
 
-    # ------------------------- GAME STATUS -------------------------
+        if (squareName === selectedSquare) {
+            square.classList.add("selected-square");
+        }
 
-    def get_status(self):
-
-        if not self.started:
-
-            return "Press Start Game"
-
-        if self.board.is_checkmate():
-
-            winner = (
-                "Black" if self.board.turn
-                else "White"
+        if (
+            lastMove &&
+            (
+                squareName === lastMove.from ||
+                squareName === lastMove.to
             )
+        ) {
+            square.classList.add("last-move-square");
+        }
+    });
 
-            return f"Checkmate! {winner} wins."
+    currentTurn.textContent = state.turn;
+    selectedSquareText.textContent = selectedSquare || "None";
+    gameStatus.textContent = state.status;
 
-        if self.board.is_stalemate():
-
-            return "Game drawn by stalemate."
-
-        if self.board.is_insufficient_material():
-
-            return "Game drawn due to insufficient material."
-
-        if self.board.is_fivefold_repetition():
-
-            return "Game drawn by fivefold repetition."
-
-        if self.board.is_seventyfive_moves():
-
-            return (
-                "Game drawn by the seventy-five-move rule."
-            )
-
-        if self.board.can_claim_threefold_repetition():
-
-            return (
-                "A draw can be claimed by threefold repetition."
-            )
-
-        if self.board.can_claim_fifty_moves():
-
-            return (
-                "A draw can be claimed by the fifty-move rule."
-            )
-
-        current_turn = (
-            "White" if self.board.turn else "Black"
-        )
-
-        if self.board.is_check():
-
-            return f"{current_turn} is in check."
-
-        return f"{current_turn} to move."
+    if (state.game_over) {
+        selectedSquare = null;
+        selectedSquareText.textContent = "None";
+    }
+}
 
 
-chess_game = ChessGame()
+// ------------------------- GET INITIAL STATE -------------------------
+
+async function loadGameState() {
+
+    try {
+
+        const response = await fetch("/api/game/state");
+        const state = await response.json();
+
+        renderGame(state);
+
+        restartGameBtn.disabled = !state.started;
+
+    } catch (error) {
+
+        gameStatus.textContent = "Unable to load the game.";
+
+        console.error(error);
+    }
+}
+
+
+// ------------------------- START GAME -------------------------
+
+async function startGame() {
+
+    try {
+
+        gameStatus.textContent = "Starting game...";
+
+        const response = await fetch("/api/game/start", {
+            method: "POST"
+        });
+
+        const result = await response.json();
+
+        selectedSquare = null;
+        lastMove = null;
+        pendingPromotion = null;
+
+        renderGame(result);
+
+        startGameBtn.disabled = true;
+        restartGameBtn.disabled = false;
+
+    } catch (error) {
+
+        gameStatus.textContent = "Unable to start the game.";
+
+        console.error(error);
+    }
+}
+
+
+// ------------------------- RESTART GAME -------------------------
+
+async function restartGame() {
+
+    try {
+
+        gameStatus.textContent = "Restarting game...";
+
+        const response = await fetch("/api/game/restart", {
+            method: "POST"
+        });
+
+        const result = await response.json();
+
+        selectedSquare = null;
+        lastMove = null;
+        pendingPromotion = null;
+
+        hidePromotionModal();
+        renderGame(result);
+
+        startGameBtn.disabled = true;
+        restartGameBtn.disabled = false;
+
+    } catch (error) {
+
+        gameStatus.textContent = "Unable to restart the game.";
+
+        console.error(error);
+    }
+}
+
+
+// ------------------------- SELECT SQUARE USING GESTURE -------------------------
+
+function selectSquare(squareName) {
+
+    if (!gameState.started) {
+
+        gameStatus.textContent = "Press Start Game first.";
+
+        return;
+    }
+
+    if (gameState.game_over) {
+
+        gameStatus.textContent = gameState.status;
+
+        return;
+    }
+
+    const piece = gameState.pieces[squareName];
+
+    // Select the starting piece
+
+    if (selectedSquare === null) {
+
+        if (!piece) {
+
+            gameStatus.textContent = "No piece exists on this square.";
+
+            return;
+        }
+
+        if (piece.colour !== gameState.turn.toLowerCase()) {
+
+            gameStatus.textContent = `It is ${gameState.turn}'s turn.`;
+
+            return;
+        }
+
+        selectedSquare = squareName;
+
+        selectedSquareText.textContent = selectedSquare;
+
+        renderGame(gameState);
+
+        return;
+    }
+
+    // Pinching the same square cancels the selection
+
+    if (selectedSquare === squareName) {
+
+        selectedSquare = null;
+
+        selectedSquareText.textContent = "None";
+        gameStatus.textContent = `${gameState.turn} to move`;
+
+        renderGame(gameState);
+
+        return;
+    }
+
+    // Selecting another piece of the same colour
+
+    if ( piece && piece.colour === gameState.turn.toLowerCase()) {
+
+        selectedSquare = squareName;
+
+        selectedSquareText.textContent = selectedSquare;
+        gameStatus.textContent = `${squareName} selected`;
+
+        renderGame(gameState);
+
+        return;
+    }
+
+    makeMove(selectedSquare, squareName);
+}
+
+
+// ------------------------- SEND MOVE TO PYTHON -------------------------
+
+async function makeMove(fromSquare, toSquare, promotion = null) {
+
+    try {
+
+        gameStatus.textContent = "Validating move...";
+
+        const response = await fetch("/api/game/move", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                from_square: fromSquare,
+                to_square: toSquare,
+                promotion: promotion
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.promotion_required) {
+
+            pendingPromotion = {
+                from: fromSquare,
+                to: toSquare
+            };
+
+            showPromotionModal();
+
+            gameStatus.textContent = result.message;
+
+            return;
+        }
+
+        if (!result.success) {
+
+            gameStatus.textContent = result.message;
+
+            return;
+        }
+
+        lastMove = result.last_move;
+        selectedSquare = null;
+        pendingPromotion = null;
+
+        renderGame(result);
+
+    } catch (error) {
+
+        gameStatus.textContent = "Unable to complete the move.";
+
+        console.error(error);
+    }
+}
+
+
+// ------------------------- PAWN PROMOTION -------------------------
+
+function showPromotionModal() {
+
+    const isWhite = gameState.turn === "White";
+
+    promotionSymbols.forEach(symbol => {
+
+        symbol.textContent = isWhite
+            ? symbol.dataset.white
+            : symbol.dataset.black;
+    });
+
+    promotionModal.hidden = false;
+}
+
+
+function hidePromotionModal() {
+
+    promotionModal.hidden = true;
+}
+
+
+promotionButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        if (!pendingPromotion) {
+            return;
+        }
+
+        const promotionPiece = button.dataset.piece;
+
+        hidePromotionModal();
+
+        makeMove(
+            pendingPromotion.from,
+            pendingPromotion.to,
+            promotionPiece
+        );
+    });
+});
+
+
+// ------------------------- START CAMERA -------------------------
+
+async function startCamera() {
+
+    try {
+
+        cameraStatus.textContent = "Starting...";
+
+        const response = await fetch("/api/camera/start", {
+            method: "POST"
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+
+            cameraStatus.textContent = "Unable to start";
+
+            gameStatus.textContent = result.message;
+
+            return;
+        }
+
+        cameraFeed.src = `/video-feed?time=${Date.now()}`;
+
+        cameraFeed.hidden = false;
+        cameraPlaceholder.hidden = true;
+
+        cameraStatus.textContent = "Running";
+
+        startCameraBtn.disabled = true;
+        stopCameraBtn.disabled = false;
+
+        startGesturePolling();
+
+    } catch (error) {
+
+        cameraStatus.textContent = "Camera error";
+
+        console.error(error);
+    }
+}
+
+
+// ------------------------- STOP CAMERA -------------------------
+
+async function stopCamera() {
+
+    try {
+
+        await fetch("/api/camera/stop", {
+            method: "POST"
+        });
+
+    } catch (error) {
+
+        console.error(error);
+    }
+
+    stopGesturePolling();
+
+    cameraFeed.src = "";
+    cameraFeed.hidden = true;
+    cameraPlaceholder.hidden = false;
+
+    gestureCursor.style.display = "none";
+
+    cameraStatus.textContent = "Stopped";
+    detectedGesture.textContent = "None";
+
+    startCameraBtn.disabled = false;
+    stopCameraBtn.disabled = true;
+}
+
+
+// ------------------------- POLL GESTURE DATA -------------------------
+
+function startGesturePolling() {
+
+    stopGesturePolling();
+
+    gestureInterval = setInterval(fetchGestureData, 100);
+}
+
+
+function stopGesturePolling() {
+
+    if (gestureInterval) {
+
+        clearInterval(gestureInterval);
+
+        gestureInterval = null;
+    }
+
+    pinchLocked = false;
+}
+
+
+// ------------------------- GET GESTURE FROM PYTHON -------------------------
+
+async function fetchGestureData() {
+
+    try {
+
+        const response = await fetch("/api/gesture");
+        const data = await response.json();
+
+        cameraStatus.textContent = data.camera_running
+            ? "Running"
+            : "Stopped";
+
+        detectedGesture.textContent = data.gesture || "None";
+
+        if (!data.hand_detected) {
+
+            gestureCursor.style.display = "none";
+            pinchLocked = false;
+
+            return;
+        }
+
+        updateGestureCursor(data.x, data.y);
+
+        if (data.gesture === "PINCH" && !pinchLocked) {
+
+            pinchLocked = true;
+
+            const squareName = coordinatesToSquare(
+                data.x,
+                data.y
+            );
+
+            if (squareName) {
+                selectSquare(squareName);
+            }
+        }
+
+        if (data.gesture !== "PINCH") {
+            pinchLocked = false;
+        }
+
+    } catch (error) {
+
+        detectedGesture.textContent = "Unavailable";
+    }
+}
+
+
+// ------------------------- MOVE VIRTUAL CURSOR -------------------------
+
+function updateGestureCursor(x, y) {
+
+    if (
+        typeof x !== "number" ||
+        typeof y !== "number"
+    ) {
+        return;
+    }
+
+    const limitedX = Math.max(0, Math.min(1, x));
+    const limitedY = Math.max(0, Math.min(1, y));
+
+    gestureCursor.style.left = `${limitedX * 100}%`;
+    gestureCursor.style.top = `${limitedY * 100}%`;
+    gestureCursor.style.display = "block";
+}
+
+
+// ------------------------- CONVERT COORDINATES TO SQUARE -------------------------
+
+function coordinatesToSquare(x, y) {
+
+    if (
+        typeof x !== "number" ||
+        typeof y !== "number"
+    ) {
+        return null;
+    }
+
+    const column = Math.min(
+        7, Math.max(0, Math.floor(x * 8))
+    );
+
+    const row = Math.min(
+        7, Math.max(0, Math.floor(y * 8))
+    );
+
+    const rank = 8 - row;
+
+    return `${files[column]}${rank}`;
+}
+
+
+// ------------------------- BUTTON EVENTS -------------------------
+
+startGameBtn.addEventListener("click", startGame);
+
+restartGameBtn.addEventListener("click", restartGame);
+
+startCameraBtn.addEventListener("click", startCamera);
+
+stopCameraBtn.addEventListener("click", stopCamera);
+
+
+// ------------------------- INITIALIZE PAGE -------------------------
+
+createChessboard();
+loadGameState();
