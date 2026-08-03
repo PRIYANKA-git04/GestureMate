@@ -22,7 +22,7 @@ class ChessGame:
             return {
                 "success": True,
                 "message": "Game started.",
-                **self.get_state()
+                **self._get_state()
             }
 
     # ------------------------- RESTART GAME -------------------------
@@ -37,7 +37,7 @@ class ChessGame:
             return {
                 "success": True,
                 "message": "Game restarted.",
-                **self.get_state()
+                **self._get_state()
             }
 
     # ------------------------- MAKE MOVE -------------------------
@@ -56,20 +56,21 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "Start the game before making a move.",
-                    **self.get_state()
+                    **self._get_state()
                 }
 
-            if self.board.isgame_over(claim_draw=True):
+            if self.board.is_game_over(claim_draw=True):
 
                 return {
                     "success": False,
                     "message": "The game has already ended.",
-                    **self.get_state()
+                    **self._get_state()
                 }
 
             # Validate square names
 
             try:
+
                 start = chess.parse_square(from_square)
                 destination = chess.parse_square(to_square)
 
@@ -78,7 +79,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "Invalid chessboard square.",
-                    **self.get_state()
+                    **self._get_state()
                 }
 
             piece = self.board.piece_at(start)
@@ -89,27 +90,34 @@ class ChessGame:
 
                 return {
                     "success": False,
-                    "message": "No chess piece exists on the selected square.",
-                    **self.get_state()
+                    "message": (
+                        "No chess piece exists on the selected square."
+                    ),
+                    **self._get_state()
                 }
 
             # Check whether the correct player selected the piece
 
             if piece.color != self.board.turn:
 
-                current_player = ( "White" if self.board.turn else "Black")
+                current_player = (
+                    "White" if self.board.turn else "Black"
+                )
 
                 return {
                     "success": False,
                     "message": f"It is {current_player}'s turn.",
-                    **self.get_state()
+                    **self._get_state()
                 }
 
             promotion_piece = None
 
             # Check whether pawn promotion is required
 
-            if ( piece.piece_type == chess.PAWN and chess.square_rank(destination) in (0, 7)):
+            if (
+                piece.piece_type == chess.PAWN
+                and chess.square_rank(destination) in (0, 7)
+            ):
 
                 if promotion is None:
 
@@ -125,7 +133,7 @@ class ChessGame:
                             "knight"
                         ],
                         "message": "Select a piece for pawn promotion.",
-                        **self.get_state()
+                        **self._get_state()
                     }
 
                 promotion_pieces = {
@@ -135,14 +143,16 @@ class ChessGame:
                     "knight": chess.KNIGHT
                 }
 
-                promotion_piece = promotion_pieces.get( str(promotion).lower())
+                promotion_piece = promotion_pieces.get(
+                    str(promotion).lower()
+                )
 
                 if promotion_piece is None:
 
                     return {
                         "success": False,
                         "message": "Invalid promotion choice.",
-                        **self.get_state()
+                        **self._get_state()
                     }
 
             move = chess.Move(
@@ -158,7 +168,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "En passant is disabled in this game.",
-                    **self.get_state()
+                    **self._get_state()
                 }
 
             # Validate the move
@@ -170,7 +180,7 @@ class ChessGame:
                     "message": (
                         "Invalid move. Select a legal destination."
                     ),
-                    **self.get_state()
+                    **self._get_state()
                 }
 
             self.board.push(move)
@@ -182,7 +192,7 @@ class ChessGame:
                     "from": from_square,
                     "to": to_square
                 },
-                **self.get_state()
+                **self._get_state()
             }
 
     # ------------------------- GET GAME STATE -------------------------
@@ -190,7 +200,10 @@ class ChessGame:
     def get_state(self):
 
         with self.lock:
-            return self.get_state()
+
+            return self._get_state()
+
+    # ------------------------- CREATE GAME STATE -------------------------
 
     def _get_state(self):
 
@@ -208,14 +221,18 @@ class ChessGame:
                 "type": chess.piece_name(piece.piece_type)
             }
 
-        current_turn = "White" if self.board.turn else "Black"
+        current_turn = (
+            "White" if self.board.turn else "Black"
+        )
 
         return {
             "started": self.started,
             "pieces": pieces,
             "turn": current_turn,
             "status": self.get_status(),
-            "game_over": self.board.is_game_over( claim_draw=True)
+            "game_over": self.board.is_game_over(
+                claim_draw=True
+            )
         }
 
     # ------------------------- GAME STATUS -------------------------
@@ -223,6 +240,7 @@ class ChessGame:
     def get_status(self):
 
         if not self.started:
+
             return "Press Start Game"
 
         if self.board.is_checkmate():
@@ -235,30 +253,44 @@ class ChessGame:
             return f"Checkmate! {winner} wins."
 
         if self.board.is_stalemate():
+
             return "Game drawn by stalemate."
 
         if self.board.is_insufficient_material():
+
             return "Game drawn due to insufficient material."
 
         if self.board.is_fivefold_repetition():
+
             return "Game drawn by fivefold repetition."
 
         if self.board.is_seventyfive_moves():
-            return "Game drawn by the seventy-five-move rule."
+
+            return (
+                "Game drawn by the seventy-five-move rule."
+            )
 
         if self.board.can_claim_threefold_repetition():
-            return "A draw can be claimed by threefold repetition."
+
+            return (
+                "A draw can be claimed by threefold repetition."
+            )
 
         if self.board.can_claim_fifty_moves():
-            return "A draw can be claimed by the fifty-move rule."
 
-        current_turn = "White" if self.board.turn else "Black"
+            return (
+                "A draw can be claimed by the fifty-move rule."
+            )
+
+        current_turn = (
+            "White" if self.board.turn else "Black"
+        )
 
         if self.board.is_check():
+
             return f"{current_turn} is in check."
 
         return f"{current_turn} to move."
-
 
 
 chess_game = ChessGame()
