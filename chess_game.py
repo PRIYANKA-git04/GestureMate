@@ -22,7 +22,7 @@ class ChessGame:
             return {
                 "success": True,
                 "message": "Game started.",
-                **self._get_state()
+                **self.create_state()
             }
 
     # ------------------------- RESTART GAME -------------------------
@@ -37,7 +37,7 @@ class ChessGame:
             return {
                 "success": True,
                 "message": "Game restarted.",
-                **self._get_state()
+                **self.create_state()
             }
 
     # ------------------------- MAKE MOVE -------------------------
@@ -56,7 +56,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "Start the game before making a move.",
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             if self.board.is_game_over(claim_draw=True):
@@ -64,7 +64,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "The game has already ended.",
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             # Validate square names
@@ -79,7 +79,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "Invalid chessboard square.",
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             piece = self.board.piece_at(start)
@@ -93,7 +93,7 @@ class ChessGame:
                     "message": (
                         "No chess piece exists on the selected square."
                     ),
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             # Check whether the correct player selected the piece
@@ -107,7 +107,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": f"It is {current_player}'s turn.",
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             promotion_piece = None
@@ -133,7 +133,7 @@ class ChessGame:
                             "knight"
                         ],
                         "message": "Select a piece for pawn promotion.",
-                        **self._get_state()
+                        **self.create_state()
                     }
 
                 promotion_pieces = {
@@ -152,7 +152,7 @@ class ChessGame:
                     return {
                         "success": False,
                         "message": "Invalid promotion choice.",
-                        **self._get_state()
+                        **self.create_state()
                     }
 
             move = chess.Move(
@@ -168,7 +168,7 @@ class ChessGame:
                 return {
                     "success": False,
                     "message": "En passant is disabled in this game.",
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             # Validate the move
@@ -180,7 +180,7 @@ class ChessGame:
                     "message": (
                         "Invalid move. Select a legal destination."
                     ),
-                    **self._get_state()
+                    **self.create_state()
                 }
 
             self.board.push(move)
@@ -192,7 +192,7 @@ class ChessGame:
                     "from": from_square,
                     "to": to_square
                 },
-                **self._get_state()
+                **self.create_state()
             }
 
     # ------------------------- GET GAME STATE -------------------------
@@ -201,11 +201,11 @@ class ChessGame:
 
         with self.lock:
 
-            return self._get_state()
+            return self.create_state()
 
     # ------------------------- CREATE GAME STATE -------------------------
 
-    def _get_state(self):
+    def create_state(self):
 
         pieces = {}
 
